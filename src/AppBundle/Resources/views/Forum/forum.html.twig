@@ -1,0 +1,40 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <h1>Forum : {{ forum.getTitle()}}</h1>
+<form action="{{ path('addPost',{'id':forumId}) }}" method="post">
+        Ajouter un post : <br />
+        Auteur : <label>
+            <input type="text" name="author"/>
+        </label><br />
+        Titre : <label>
+            <input type="text" name="title"/>
+        </label><br />
+        Date : <label>
+            <input type="text" name="date"/>
+        </label><br />
+        <label>
+            <textarea name="content"></textarea>
+        </label><br />
+        <input type="submit" value="Ajouter" />
+    </form>
+
+    <h2>Listes des posts :</h2>
+
+
+{% for post in  forum.getPosts()  %}
+<div>
+<span> {{ post.getTitle() }}  - Le {{ post.getDate() }} : De {{ post.getAuthor() }}</span><br />
+<code>
+    {{ post.getContent() }}
+</code>
+</div><br /><br />
+
+{% endfor %}
+    <a href="{{ path('index') }}">retour</a>
+
+{% endblock %}
+{% block title %}
+
+{% endblock %}
+
