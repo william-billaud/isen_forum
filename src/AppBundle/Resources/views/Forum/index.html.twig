@@ -3,18 +3,17 @@
 {% block title %}AppBundle:Forum:index{% endblock %}
 
 {% block body %}
-    <h1>Forum</h1>
-    <form action="{{ path('addForum') }}" method="post">
-        Ajouter un forum : <label>
-            <input type="text" name="title"/>
-        </label> <input type="submit" value="Ajouter" />
-    </form>
-
-    <h2>Listes des forums :</h2>
-    <ul>
-
-{% for id,forum in forums %}
-        <li><a href="{{ path('showForum',{'id': id} ) }}">{{ forum.getTitle() }}</a></li>
-{% endfor %}
-    </ul>
+<ul class="collection">
+    {% for forum in forums %}
+        <li class="collection-item avatar">
+            <i class="material-icons circle">folder</i>
+            <span class="title"><a
+                        href="{{ path('app_forum_show',{id:forum.id}) }}">{{ forum.title }}</a>
+            </span>
+            <p>
+            <blockquote>{{ forum.description }}</blockquote>
+            </p>
+        </li>
+    {% endfor %}
+</ul>
 {% endblock %}

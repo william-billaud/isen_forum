@@ -19,3 +19,5 @@
 \.idea/
 
 web/data/forums\.dat
+
+-coverage/

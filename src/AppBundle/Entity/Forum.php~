@@ -2,7 +2,6 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,7 +39,7 @@ class Forum
     /**
      * @var Collection
      *
-     * @ORM\OneToMany(targetEntity="Topic",mappedBy="forum")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Topic",mappedBy="forum")
      */
     private $topics;
 
@@ -101,45 +100,5 @@ class Forum
     {
         return $this->description;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->topics = new ArrayCollection();
-    }
-
-    /**
-     * Add topic
-     *
-     * @param Topic $topic
-     *
-     * @return Forum
-     */
-    public function addTopic(Topic $topic)
-    {
-        $this->topics[] = $topic;
-
-        return $this;
-    }
-
-    /**
-     * Remove topic
-     *
-     * @param Topic $topic
-     */
-    public function removeTopic(Topic $topic)
-    {
-        $this->topics->removeElement($topic);
-    }
-
-    /**
-     * Get topics
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTopics()
-    {
-        return $this->topics;
-    }
 }
+

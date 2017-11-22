@@ -2,88 +2,69 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\AppBundle;
 use AppBundle\Entity\Forum;
-use AppBundle\Entity\Post;
-use AppBundle\Repository\ForumRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class ForumController
+ * @package AppBundle\Controller
+ * @Route("/forum")
+ */
 class ForumController extends Controller
 {
     /**
-     * @Route("/",name="index")
+     * @Route("/",name="app_forum_index")
      */
     public function indexAction()
     {
-        $repository = new ForumRepository();
         return $this->render('AppBundle:Forum:index.html.twig', array(
-            'forums' => $repository->getAll()
+            'forums'=>$this->getDoctrine()->getRepository(Forum::class)->findAll()
         ));
     }
 
     /**
-     * @Route("/forum/add",name="addForum")
+     * @Route("/add")
+     * @Method("GET")
      */
     public function addAction()
     {
-        // récupère le nom du nouveau forum
-        $forumName = $_POST['title'];
-
-        // créee le nouveau forum
-        $forum = new Forum();
-        $forum->setTitle($forumName);
-
-        // ajoute le forum
-        $repository = new ForumRepository();
-        $repository->add($forum);
-
-        // redirige vers la page d'accueil
-        return $this->redirectToRoute("index");
+        return $this->render('AppBundle:Forum:add.html.twig', array(
+            // ...
+        ));
     }
 
     /**
-     * @param $id
-     * @Route("/forum/show/{id}",name="showForum")
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function showAction($id)
-    {
-        // récupère l'id du forum
-        $forumId = $id;
-
-        // récupère le forum
-        $repository = new ForumRepository();
-
-
-        return $this->render('AppBundle:Forum:forum.html.twig',[
-            'forum' => $repository->get($forumId),
-            'forumId' => $forumId
-        ]);
-    }
-
-    /**
-     * @Route("/post/add/{id}",name="addPost")
-     * @param $id
+     * @Route("/add")
+     * @Method("POST")
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function addPostAction($id)
+    public function addPostAction(Request $request)
     {
-        // récupère l'id du forum
-        $forumId = $id;
+        $forum= new Forum();
+        $forum->setTitle($request->get('title'));
+        $forum->setDescription($request->get('description'));
 
-        // crée le nouveau post, et copie les données
-        $post = new Post();
-        $post->setTitle($_POST['title']);
-        $post->setAuthor($_POST['author']);
-        $post->setDate($_POST['date']);
-        $post->setContent($_POST['content']);
+        $em= $this->getDoctrine()->getManager();
+        $em->persist($forum);
+        $em->flush();
 
-        $repository = new ForumRepository();
-        $repository->addPost($forumId, $post);
+        return $this->redirectToRoute('app_forum_index');
+    }
 
-        // redirige vers le forum
-        return $this->redirectToRoute("showForum",array("id"=>$forumId));
+    /**
+     * @Route("/{id}",requirements={"id":"\d+"},name="app_forum_show")
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function showAction(int $id)
+    {
+        return $this->render('AppBundle:Forum:show.html.twig', array(
+            'forum'=>$this->getDoctrine()->getRepository(Forum::class)->find($id)
+        ));
     }
 
 }
