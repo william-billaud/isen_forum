@@ -1,0 +1,31 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}AppBundle:Post:Add{% endblock %}
+
+{% block body %}
+    <h3>
+        create new message in topic <b>{{ topic.title }}</b>
+    </h3>
+    <div class="row">
+        <form action="" class="col s12" method="post">
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="text" id="author" class="validate" name="author">
+                    <label for="author">Author</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="text" id="message" class="validate" name="message">
+                    <label for="message">Message</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <button class="btn wawes-effect wawes-light" type="submit" name="action">
+                    Save <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

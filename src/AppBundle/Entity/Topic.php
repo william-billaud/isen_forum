@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -49,6 +50,13 @@ class Topic
      * @ORM\JoinColumn(name="forum_id",referencedColumnName="id")
      */
     private $forum;
+
+    /**
+     * @var Collection
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Post",mappedBy="topic",cascade={"remove"})
+     */
+    private $posts;
 
 
     /**
@@ -155,5 +163,21 @@ class Topic
     public function getForum()
     {
         return $this->forum;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    /**
+     * @param Collection $posts
+     */
+    public function setPosts(Collection $posts)
+    {
+        $this->posts = $posts;
     }
 }

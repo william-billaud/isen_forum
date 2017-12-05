@@ -24,12 +24,11 @@ class TopicController extends Controller
      */
     public function indexAction(int $forum_id,int $id)
     {
-        return $this->render('AppBundle:Topic:index.html.twig', array(
-            [
-                'forum_id'=>$forum_id,
-                'id'=>$id
+        return $this->render('AppBundle:Topic:index.html.twig',[
+                'forum'=>$this->getDoctrine()->getRepository(Forum::class)->find($forum_id),
+                'topic'=>$this->getDoctrine()->getRepository(Topic::class)->find($id)
             ]
-        ));
+        );
     }
 
     /**
@@ -69,5 +68,20 @@ class TopicController extends Controller
         return $this->redirectToRoute('app_forum_show',[
             'id'=>$forum->getId()
         ]);
+    }
+
+    /**
+     * @Route("/remove/{id}",requirements={"id":"\d+"})
+     * @param int $forum_id
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function removeAction(int $forum_id,$id)
+    {
+        $topic=$this->getDoctrine()->getRepository(Topic::class)->find($id);
+        $em=$this->getDoctrine()->getManager();
+        $em->remove($topic);
+        $em->flush();
+        return $this->redirectToRoute('app_forum_show',['id'=>$forum_id]);
     }
 }

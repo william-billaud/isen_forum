@@ -4,4 +4,42 @@
 
 {% block body %}
 <h1>Welcome to the Topic:index page</h1>
+
+    <h3>{{ topic.title }}</h3>
+    <blockquote>{{ topic.author }}</blockquote>
+
+    <a href="{{ path('app_post_add',{forum_id:forum.id,topic_id:topic.id}) }}">
+        <button class="btn wawes-effect wawes-light green">Create new message
+            <i class="material-icons right">send</i>
+        </button>
+    </a>
+    <a href="{{ path('app_topic_remove',{forum_id:forum.id,id:topic.id}) }}">
+        <button class="btn wawes-effect wawes-light red">Delete topic
+            <i class="material-icons right">delete</i>
+        </button>
+    </a>
+
+    <ul class="collection" >
+        {% for post in topic.posts %}
+            <div class="row section col s12">
+                <h4 class="col s10" >
+                    {{ post.autheur }} - {{ post.creation |date }}
+                </h4>
+            <li class="collection-item avatar col s2">
+                <i class="material-icons circle red">delete</i>
+                <span class="title"><a href="{{ path('app_post_remove',{topic_id:topic.id,forum_id:forum.id,id:post.id}) }}">supprimer</a>
+                </span>
+            </li>
+                <p class="col s12">
+                {{  post.message}}
+                </p>
+            </div>
+            <div class="divider"></div>
+        {% endfor %}
+    </ul>
+    <a href="{{ path('app_forum_show',{id:forum.id}) }}">
+        <button class="btn wawes-effect wawes-light"> back
+            <i class="material-icons right">arrow_back</i>
+        </button>
+    </a>
 {% endblock %}

@@ -20,6 +20,7 @@ class ForumControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/forum/add');
         $this->assertEquals(200,$client->getResponse()->getStatusCode());
+        $this->markTestIncomplete('Test incomplet, output à verifier');
     }
 
     public function testShow()
@@ -28,6 +29,7 @@ class ForumControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', 'forum/1');
         $this->assertEquals(200,$client->getResponse()->getStatusCode());
+        $this->markTestIncomplete('Test incomplet, output à verifier');
     }
 
 }
