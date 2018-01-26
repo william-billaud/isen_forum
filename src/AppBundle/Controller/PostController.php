@@ -55,6 +55,7 @@ class PostController extends Controller
      * @param $forum_id
      * @param $topic_id
      * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function RemoveAction($forum_id, $topic_id,$id)
     {

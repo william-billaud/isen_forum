@@ -5,25 +5,13 @@
 {% block body %}
     <h3>create new forum</h3>
     <div class="row">
-        <form action="" class="col s12" method="post">
-            <div class="row">
-                <div class="input-field col s12">
-                    <input type="text" id="title" class="validate" name="title">
-                    <label for="title">Title</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <textarea name="description" id="description" class="materialize-textarea"></textarea>
-                    <label for="description">Description</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s12">
-                    <button class="btn wawes-effect wawes-light" type="submit">Save <i class="material-icons right">send</i></button>
-
-                </div>
-            </div>
-        </form>
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+        <div class="row">
+            <button class="btn wawes-effect wawes-light" type="submit" name="action">
+                Save <i class="material-icons right">send</i>
+            </button>
+        </div>
+        {{ form_end(form) }}
     </div>
 {% endblock %}

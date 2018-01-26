@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Forum;
+use AppBundle\Form\ForumType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -26,33 +27,26 @@ class ForumController extends Controller
     }
 
     /**
-     * @Route("/add")
-     * @Method("GET")
+     * @Route("/add",name="app_forum_add")
+     * @Route("/edit/{id}",name="app_forum_edit")
      */
-    public function addAction()
+    public function addAction(Request $request,Forum $forum = null)
     {
-        return $this->render('AppBundle:Forum:add.html.twig', array(
-            // ...
+        if($forum===null)
+        {
+            $forum=new Forum();
+        }
+        $form = $this->createForm(ForumType::class,$forum);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $em=$this->getDoctrine()->getManager();
+            $em->persist($forum);
+            $em->flush();
+            return $this->redirectToRoute('app_forum_index');
+        }
+        return $this->render('AppBundle:Forum:add.html.twig', array('form'=>$form->createView()
         ));
-    }
-
-    /**
-     * @Route("/add")
-     * @Method("POST")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function addPostAction(Request $request)
-    {
-        $forum= new Forum();
-        $forum->setTitle($request->get('title'));
-        $forum->setDescription($request->get('description'));
-
-        $em= $this->getDoctrine()->getManager();
-        $em->persist($forum);
-        $em->flush();
-
-        return $this->redirectToRoute('app_forum_index');
     }
 
     /**

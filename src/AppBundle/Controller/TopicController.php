@@ -4,7 +4,9 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Forum;
 use AppBundle\Entity\Topic;
+use AppBundle\Form\TopicType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,42 +34,38 @@ class TopicController extends Controller
     }
 
     /**
-     * @Route("/add")
+     * @Route("/add",name="app_topic_add")
+     * @Route("/edit/{id_topic}",name="app_topic_edit")
      * @Method("GET")
-     * @param int $forum_id
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function addAction(int $forum_id)
-    {
-        return $this->render('AppBundle:Topic:add.html.twig', array(
-            'forum'=>$this->getDoctrine()->getRepository(Forum::class)->find($forum_id)
-        ));
-    }
-
-    /**
-     * @Route("/add")
-     * @Method("Post")
-     * @param int $forum_id
+     * @ParamConverter("forum",options={"id"="forum_id"})
+     * @ParamConverter("topic",options={"id"="id_forum"})
      * @param Request $request
+     * @param Forum $forum
+     * @param Topic|null $topic
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function addPostAction(int $forum_id,Request $request)
+    public function addAction(Request $request,Forum $forum,Topic $topic=null)
     {
-        $forum=$this->getDoctrine()->getRepository(Forum::class)->find($forum_id);
-        $topic=new Topic();
-        $topic->setTitle($request->get('title'));
-        $topic->setAuthor($request->get('author'));
-        $topic->setForum($forum);
-        $topic->setCreation(new \DateTime());
+        if($topic ===null)
+        {
+            $topic=new Topic();
+        }
 
-        $em=$this->getDoctrine()->getManager();
-        $em->persist($topic);
-        $em->flush();
-
-
-        return $this->redirectToRoute('app_forum_show',[
-            'id'=>$forum->getId()
-        ]);
+        $form = $this->createForm(TopicType::class,$topic);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $topic->setForum($forum);
+            $topic->setCreation(new \DateTime());
+            $em=$this->getDoctrine()->getManager();
+            $em->persist($topic);
+            $em->flush();
+            return $this->redirectToRoute('app_forum_show',['id' =>$forum->getId()]);
+        }
+        return $this->render('AppBundle:Topic:add.html.twig', array(
+            'forum'=>$forum,
+            'form'=>$form->createView()
+        ));
     }
 
     /**
